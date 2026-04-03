@@ -1,0 +1,354 @@
+CREATE TABLE tb_machine (
+	system_key	varchar2		NOT NULL,
+	system_code	number		NULL,
+	system_name	varchar2		NULL,
+	system_status	varchar2		NULL
+);
+
+CREATE TABLE tb_commoncode (
+	code_key	varchar2		NOT NULL,
+	code_group	varchar2		NULL,
+	code	varchar2		NULL,
+	code_name	varchar2		NULL,
+	code_desc	varchar2		NULL,
+	use_YN	number		NULL,
+	created_at	date		NULL,
+	updated_at	date		NULL,
+	user_key	varchar2		NOT NULL,
+	user_key2	varchar2		NOT NULL
+);
+
+CREATE TABLE board (
+	board_key	number		NOT NULL,
+	type	varchar2		NULL,
+	title	varchar2		NULL,
+	user_key	number		NOT NULL,
+	content	varchar2		NULL
+);
+
+CREATE TABLE tb_Quality Control (
+	qc_key	varchar2		NOT NULL,
+	inspect_qty	NUMBER		NULL,
+	defect_qty	NUMBER		NULL,
+	inspect_date	DATE		NULL,
+	lot_key	number		NOT NULL
+);
+
+CREATE TABLE tb_defect (
+	defect_key	varchar2		NOT NULL,
+	defect_qty	varchar2		NULL,
+	action	varchar2		NULL,
+	amount	number		NULL,
+	qc_no	VARCHAR(20)		NOT NULL
+);
+
+CREATE TABLE tb_user (
+	user_key	varchar2		NOT NULL,
+	user_id	varchar2		NULL,
+	user_pw	varchar2		NULL,
+	user_name	varchar2		NULL,
+	hiredate	date		NULL,
+	user_role_key	number		NOT NULL,
+	deptno	number		NOT NULL
+);
+
+CREATE TABLE tb_user_role (
+	user_role_key	varchar2		NOT NULL,
+	role_name	varchar2		NULL
+);
+
+CREATE TABLE tb_stock (
+	lot_key	varchar2		NOT NULL,
+	name	varchar2		NULL,
+	type	varchar2		NULL,
+	remain	number		NULL,
+	vender	varchar2		NULL,
+	import	varchar2		NULL,
+	code_id	varchar2		NOT NULL,
+	work_key	varchar2		NOT NULL
+);
+
+CREATE TABLE tb_bom (
+	BOM_KEY	varchar2		NOT NULL,
+	item_code	varchar2(30)		NULL,
+	item_count	number		NULL,
+	status	number		NULL,
+	code_id	varchar2		NOT NULL
+);
+
+CREATE TABLE tb_plan (
+	plan_key	varchar2		NOT NULL,
+	goal	varchar2		NULL,
+	priority	number		NULL,
+	plan_date	date		NULL,
+	code_id	varchar2		NOT NULL,
+	deptno	number		NOT NULL
+);
+
+CREATE TABLE tb_WorkOrder (
+	work_key	varchar2		NOT NULL,
+	product_name	VARCHAR2(200)		NULL,
+	quantity	number(5)		NULL,
+	duedate	date		NULL,
+	status	VARCHAR2(20)		NULL,
+	created_at	date		NULL,
+	plan_key	number		NOT NULL,
+	user_key	varchar2		NOT NULL
+);
+
+CREATE TABLE tb_process (
+	process_key	varchar2		NOT NULL,
+	sequence_no	number		NULL,
+	work_desc	varchar2		NULL,
+	process_note	varchar2		NULL,
+	code_id	varchar2		NOT NULL,
+	system_key	varchar2		NOT NULL
+);
+
+CREATE TABLE tb_dept (
+	deptno	number		NOT NULL,
+	dname	varchar2		NULL
+);
+
+ALTER TABLE tb_machine ADD CONSTRAINT PK_TB_MACHINE PRIMARY KEY (
+	system_key
+);
+
+ALTER TABLE tb_commoncode ADD CONSTRAINT PK_TB_COMMONCODE PRIMARY KEY (
+	code_key
+);
+
+ALTER TABLE board ADD CONSTRAINT PK_BOARD PRIMARY KEY (
+	board_key
+);
+
+ALTER TABLE tb_Quality Control ADD CONSTRAINT PK_TB_QUALITY CONTROL PRIMARY KEY (
+	qc_key
+);
+
+ALTER TABLE tb_defect ADD CONSTRAINT PK_TB_DEFECT PRIMARY KEY (
+	defect_key
+);
+
+ALTER TABLE tb_user ADD CONSTRAINT PK_TB_USER PRIMARY KEY (
+	user_key
+);
+
+ALTER TABLE tb_user_role ADD CONSTRAINT PK_TB_USER_ROLE PRIMARY KEY (
+	user_role_key
+);
+
+ALTER TABLE tb_stock ADD CONSTRAINT PK_TB_STOCK PRIMARY KEY (
+	lot_key
+);
+
+ALTER TABLE tb_bom ADD CONSTRAINT PK_TB_BOM PRIMARY KEY (
+	BOM_KEY
+);
+
+ALTER TABLE tb_plan ADD CONSTRAINT PK_TB_PLAN PRIMARY KEY (
+	plan_key
+);
+
+ALTER TABLE tb_WorkOrder ADD CONSTRAINT PK_TB_WORKORDER PRIMARY KEY (
+	work_key
+);
+
+ALTER TABLE tb_process ADD CONSTRAINT PK_TB_PROCESS PRIMARY KEY (
+	process_key
+);
+
+ALTER TABLE tb_dept ADD CONSTRAINT PK_TB_DEPT PRIMARY KEY (
+	deptno
+);
+
+ALTER TABLE tb_commoncode ADD CONSTRAINT FK_tb_user_TO_tb_commoncode_1 FOREIGN KEY (
+	user_key
+)
+REFERENCES tb_user (
+	user_key
+);
+
+ALTER TABLE tb_commoncode ADD CONSTRAINT FK_tb_user_TO_tb_commoncode_2 FOREIGN KEY (
+	user_key2
+)
+REFERENCES tb_user (
+	user_key
+);
+
+ALTER TABLE board ADD CONSTRAINT FK_tb_user_TO_board_1 FOREIGN KEY (
+	user_key
+)
+REFERENCES tb_user (
+	user_key
+);
+
+ALTER TABLE tb_Quality Control ADD CONSTRAINT FK_tb_stock_TO_tb_Quality Control_1 FOREIGN KEY (
+	lot_key
+)
+REFERENCES tb_stock (
+	lot_key
+);
+
+ALTER TABLE tb_defect ADD CONSTRAINT FK_tb_Quality Control_TO_tb_defect_1 FOREIGN KEY (
+	qc_no
+)
+REFERENCES tb_Quality Control (
+	qc_key
+);
+
+ALTER TABLE tb_user ADD CONSTRAINT FK_tb_user_role_TO_tb_user_1 FOREIGN KEY (
+	user_role_key
+)
+REFERENCES tb_user_role (
+	user_role_key
+);
+
+ALTER TABLE tb_user ADD CONSTRAINT FK_tb_dept_TO_tb_user_1 FOREIGN KEY (
+	deptno
+)
+REFERENCES tb_dept (
+	deptno
+);
+
+ALTER TABLE tb_stock ADD CONSTRAINT FK_tb_commoncode_TO_tb_stock_1 FOREIGN KEY (
+	code_id
+)
+REFERENCES tb_commoncode (
+	code_key
+);
+
+ALTER TABLE tb_stock ADD CONSTRAINT FK_tb_WorkOrder_TO_tb_stock_1 FOREIGN KEY (
+	work_key
+)
+REFERENCES tb_WorkOrder (
+	work_key
+);
+
+ALTER TABLE tb_bom ADD CONSTRAINT FK_tb_commoncode_TO_tb_bom_1 FOREIGN KEY (
+	code_id
+)
+REFERENCES tb_commoncode (
+	code_key
+);
+
+ALTER TABLE tb_plan ADD CONSTRAINT FK_tb_commoncode_TO_tb_plan_1 FOREIGN KEY (
+	code_id
+)
+REFERENCES tb_commoncode (
+	code_key
+);
+
+ALTER TABLE tb_plan ADD CONSTRAINT FK_tb_dept_TO_tb_plan_1 FOREIGN KEY (
+	deptno
+)
+REFERENCES tb_dept (
+	deptno
+);
+
+ALTER TABLE tb_WorkOrder ADD CONSTRAINT FK_tb_plan_TO_tb_WorkOrder_1 FOREIGN KEY (
+	plan_key
+)
+REFERENCES tb_plan (
+	plan_key
+);
+
+ALTER TABLE tb_WorkOrder ADD CONSTRAINT FK_tb_user_TO_tb_WorkOrder_1 FOREIGN KEY (
+	user_key
+)
+REFERENCES tb_user (
+	user_key
+);
+
+ALTER TABLE tb_process ADD CONSTRAINT FK_tb_commoncode_TO_tb_process_1 FOREIGN KEY (
+	code_id
+)
+REFERENCES tb_commoncode (
+	code_key
+);
+
+ALTER TABLE tb_process ADD CONSTRAINT FK_tb_machine_TO_tb_process_1 FOREIGN KEY (
+	system_key
+)
+REFERENCES tb_machine (
+	system_key
+);
+
+/* PK 설정 */
+
+ALTER TABLE tb_machine ADD PRIMARY KEY (system_key);
+
+ALTER TABLE tb_commoncode ADD PRIMARY KEY (code_key);
+
+ALTER TABLE board ADD PRIMARY KEY (board_key);
+
+ALTER TABLE tb_qualitycontrol ADD PRIMARY KEY (qc_key);
+
+ALTER TABLE tb_defect ADD PRIMARY KEY (defect_key);
+
+ALTER TABLE tb_user ADD PRIMARY KEY (user_key);
+
+ALTER TABLE tb_user_role ADD PRIMARY KEY (user_role_key);
+
+ALTER TABLE tb_stock ADD PRIMARY KEY (lot_key);
+
+ALTER TABLE tb_bom ADD PRIMARY KEY (bom_key);
+
+ALTER TABLE tb_plan ADD PRIMARY KEY (plan_key);
+
+ALTER TABLE tb_workorder ADD PRIMARY KEY (work_key);
+
+ALTER TABLE tb_process ADD PRIMARY KEY (process_key);
+
+ALTER TABLE tb_dept ADD PRIMARY KEY (deptno);
+
+
+/* FK 설정 */
+
+ALTER TABLE tb_commoncode 
+ADD FOREIGN KEY (user_key) REFERENCES tb_user(user_key);
+
+ALTER TABLE tb_commoncode 
+ADD FOREIGN KEY (user_key2) REFERENCES tb_user(user_key);
+
+ALTER TABLE board 
+ADD FOREIGN KEY (user_key) REFERENCES tb_user(user_key);
+
+ALTER TABLE tb_qualitycontrol 
+ADD FOREIGN KEY (lot_key) REFERENCES tb_stock(lot_key);
+
+ALTER TABLE tb_defect 
+ADD FOREIGN KEY (qc_no) REFERENCES tb_qualitycontrol(qc_key);
+
+ALTER TABLE tb_user 
+ADD FOREIGN KEY (user_role_key) REFERENCES tb_user_role(user_role_key);
+
+ALTER TABLE tb_user 
+ADD FOREIGN KEY (deptno) REFERENCES tb_dept(deptno);
+
+ALTER TABLE tb_stock 
+ADD FOREIGN KEY (code_id) REFERENCES tb_commoncode(code_key);
+
+ALTER TABLE tb_stock 
+ADD FOREIGN KEY (work_key) REFERENCES tb_workorder(work_key);
+
+ALTER TABLE tb_bom 
+ADD FOREIGN KEY (code_id) REFERENCES tb_commoncode(code_key);
+
+ALTER TABLE tb_plan 
+ADD FOREIGN KEY (code_id) REFERENCES tb_commoncode(code_key);
+
+ALTER TABLE tb_plan 
+ADD FOREIGN KEY (deptno) REFERENCES tb_dept(deptno);
+
+ALTER TABLE tb_workorder 
+ADD FOREIGN KEY (plan_key) REFERENCES tb_plan(plan_key);
+
+ALTER TABLE tb_workorder 
+ADD FOREIGN KEY (user_key) REFERENCES tb_user(user_key);
+
+ALTER TABLE tb_process 
+ADD FOREIGN KEY (code_id) REFERENCES tb_commoncode(code_key);
+
+ALTER TABLE tb_process 
+ADD FOREIGN KEY (system_key) REFERENCES tb_machine(system_key);
